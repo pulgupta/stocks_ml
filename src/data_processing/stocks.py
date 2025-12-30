@@ -15,13 +15,13 @@ url_map = {
 
 class DataManager:
     
-    def get_stock_ticker(self, index_name): 
+    def get_stock_ticker(self, index_name) -> pd.DataFrame:
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
         try: 
             print(f'Downloading the stocks list for index {index_name}')
-            response = requests.get (url_map[index_name], headers=headers)
+            response = requests.get(url_map[index_name], headers=headers)
             print(f'Downloaded the stocks list for index {index_name}')
             return pd.read_csv(StringIO(response.text))
         except Exception as e:
@@ -41,8 +41,99 @@ class DataManager:
             dat.to_csv('/Users/pulgupta/Documents/codes/Stocks-ML/data/raw/' + symbol + '.csv'),
             time.sleep(10)
             
+    def get_comprehensive_stock_data(self, symbol):
+        """Get price data + all fundamental data for a stock"""
+    
+        print(f"Fetching data for {symbol}...")
+        ticker = yf.Ticker(symbol)
+        
+        try:
+            # 1. Price Data
+            price_data = ticker.history(start='2022-04-01', end='2025-12-30')
+            
+            # 2. Current Fundamentals
+            info = ticker.info
+            current_fundamentals = {
+                'Date': pd.Timestamp.now(),
+                'Symbol': symbol,
+                'PE_Ratio': info.get('trailingPE'),
+                'Forward_PE': info.get('forwardPE'),
+                'PB_Ratio': info.get('priceToBook'),
+                'PS_Ratio': info.get('priceToSalesTrailing12Months'),
+                'PEG_Ratio': info.get('pegRatio'),
+                'EPS': info.get('trailingEps'),
+                'Forward_EPS': info.get('forwardEps'),
+                'Dividend_Yield': info.get('dividendYield'),
+                'Market_Cap': info.get('marketCap'),
+                'Enterprise_Value': info.get('enterpriseValue'),
+                'Book_Value_Per_Share': info.get('bookValue'),
+                'Price_to_Book': info.get('priceToBook'),
+                'ROE': info.get('returnOnEquity'),
+                'ROA': info.get('returnOnAssets'),
+                'ROIC': info.get('returnOnCapital'),
+                'Profit_Margin': info.get('profitMargins'),
+                'Operating_Margin': info.get('operatingMargins'),
+                'Gross_Margin': info.get('grossMargins'),
+                'Revenue_Per_Share': info.get('revenuePerShare'),
+                'Debt_to_Equity': info.get('debtToEquity'),
+                'Current_Ratio': info.get('currentRatio'),
+                'Quick_Ratio': info.get('quickRatio'),
+                'Revenue_Growth': info.get('revenueGrowth'),
+                'Earnings_Growth': info.get('earningsGrowth'),
+                'Operating_Cashflow': info.get('operatingCashflow'),
+                'Free_Cashflow': info.get('freeCashflow'),
+                'Beta': info.get('beta'),
+                'Shares_Outstanding': info.get('sharesOutstanding'),
+            }
+            
+            # 3. Financial Statements
+            income_stmt = ticker.financials
+            balance_sheet = ticker.balance_sheet
+            cashflow = ticker.cashflow
+            
+            # 4. Quarterly data for more granular analysis
+            quarterly_financials = ticker.quarterly_financials
+            
+            return {
+                'price_data': price_data,
+                'current_fundamentals': current_fundamentals,
+                'income_statement': income_stmt,
+                'balance_sheet': balance_sheet,
+                'cashflow': cashflow,
+                'quarterly_financials': quarterly_financials
+            }
+            
+        except Exception as e:
+            print(f"Error fetching data for {symbol}: {e}")
+            return None
+            
+    def save_csv(self, data, symbol):
+        if data:
+            print (f'Saving details for {symbol}')
+            target_file = '/Users/pulgupta/Documents/codes/Stocks-ML/data/raw/' + symbol
+            # Save price data
+            data['price_data'].to_csv(target_file + '_prices.csv')
+            
+            # Save current fundamentals
+            pd.DataFrame([data['current_fundamentals']]).to_csv(target_file + '_fundamentals.csv', index=False)
+            
+            # Save financial statements
+            data['income_statement'].to_csv(target_file + '_income_stmt.csv')
+            data['balance_sheet'].to_csv(target_file + '_balance_sheet.csv')
+            data['cashflow'].to_csv(target_file + '_cashflow.csv')
+            data['quarterly_financials'].to_csv(target_file + '_quarterly.csv')
 
-data_manager = DataManager()
-data_manager.save_stock_details(data_manager.extract_symbol(data_manager.get_stock_ticker('nifty50')))
+def main():
+    data_manager = DataManager()
+    print('Downloading stock list')
+    df = data_manager.get_stock_ticker('nifty50')
+    all_symbols = data_manager.extract_symbol(df)
+    for s in all_symbols:
+        print(f'Downloading stock data for {s}')
+        data = data_manager.get_comprehensive_stock_data(s)
+        data_manager.save_csv(data, s)
+        time.sleep(10)
 
+if __name__ == "__main__":
+    main()
             
