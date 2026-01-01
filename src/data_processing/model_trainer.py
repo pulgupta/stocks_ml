@@ -16,14 +16,15 @@ class ModelTrainer:
         X_train_scaled = scaler.fit_transform(X_train)
         X_test_scaled = scaler.transform(X_test)
 
-        rf_model = RandomForestRegressor(
+        model = RandomForestRegressor(
             n_estimators=100,
             max_depth=10,
             min_samples_split=5,
             random_state=42,
             n_jobs=-1
         )
-        rf_model.fit(X_train_scaled, y_train)
+        model.fit(X_train_scaled, y_train)
+        self.save_model(model, scaler, X.keys())
 
     def save_model(self, model, scaler, feature_columns, model_name='random_forest', output_dir='./models'):
         """

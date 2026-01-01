@@ -22,9 +22,13 @@ def main():
     args = parser.parse_args()
 
     if args.command == 'train':
+        data_processor = DataProcessor()
+        X, Y = data_processor.prepare_data()
         model_trainer = ModelTrainer()
-        model_trainer.train(args)
+        model_trainer.train(X, Y)
     else:
+        predictor = Predictor()
+        predictor.predict_from_csv(args.input)
 
 if __name__ == "__main__":
     main()

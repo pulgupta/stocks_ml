@@ -13,7 +13,8 @@ class DataProcessor:
 
         return pd.concat(all_data, ignore_index=True)
 
-    def prepare_data(self, df):
+    def prepare_data(self, path):
+        df = self.load_data(path)
         Y = df['Current_Price'].copy()
         X = df.drop('Current_Price', axis=1)
         return X, Y
