@@ -132,7 +132,7 @@ def main():
         print(f'Downloading stock data for {s}')
         data = data_manager.get_comprehensive_stock_data(s)
         data_manager.save_csv(data, s)
-        time.sleep(10)
+        time.sleep(5)
 
 if __name__ == "__main__":
     main()
