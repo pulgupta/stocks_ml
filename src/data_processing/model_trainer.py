@@ -55,7 +55,7 @@ class ModelTrainer:
 
         return model_path, scaler_path, metadata_path
 
-    def load_model(model_name, models_dir):
+    def load_model(self, model_name, models_dir):
         """
         Load trained model, scaler, and metadata.
         """

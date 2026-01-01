@@ -5,7 +5,7 @@ import pandas as pd
 
 class Predictor:
 
-    def predict_from_csv(csv_path, model_name, models_dir):
+    def predict_from_csv(self, csv_path, model_name, models_dir):
         """
         Load a CSV file and predict stock prices using trained model.
         """
@@ -19,17 +19,13 @@ class Predictor:
         feature_columns = metadata['feature_columns']
 
         # Load CSV
-        df = pd.read_csv(csv_path)
-        print(f"Loaded {len(df)} rows from CSV")
-
-        # Prepare features (no target needed for prediction)
-        data_processor = DataProcessor()
-        X, Y = data_processor.prepare_data(df, feature_columns=feature_columns)
+        X = pd.read_csv(csv_path)
+        print(f"Loaded {len(X)} rows from CSV")
 
         # Scale features
-        X_scaled = scaler.transform(X)
+        x_scaled = scaler.transform(X)
 
         # Make predictions
-        predictions = model.predict(X_scaled)
+        predictions = model.predict(x_scaled)
         print(f'Prediction is {predictions}')
         return predictions
