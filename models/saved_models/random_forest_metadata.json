@@ -1,0 +1,32 @@
+{
+  "feature_columns": [
+    "PE_Ratio",
+    "Forward_PE",
+    "PB_Ratio",
+    "PS_Ratio",
+    "PEG_Ratio",
+    "EPS",
+    "Forward_EPS",
+    "Dividend_Yield",
+    "Market_Cap",
+    "Enterprise_Value",
+    "Book_Value_Per_Share",
+    "Price_to_Book",
+    "ROE",
+    "ROA",
+    "ROIC",
+    "Profit_Margin",
+    "Operating_Margin",
+    "Gross_Margin",
+    "Revenue_Per_Share",
+    "Debt_to_Equity",
+    "Current_Ratio",
+    "Quick_Ratio",
+    "Revenue_Growth",
+    "Earnings_Growth",
+    "Operating_Cashflow",
+    "Free_Cashflow",
+    "Beta"
+  ],
+  "model_type": "RandomForestRegressor"
+}

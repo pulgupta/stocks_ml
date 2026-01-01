@@ -14,8 +14,9 @@ class DataProcessor:
         return pd.concat(all_data, ignore_index=True)
 
     def prepare_data(self, path):
-        df = self.load_data(path)
-        Y = df['Current_Price'].copy()
-        X = df.drop('Current_Price', axis=1)
+        df:pd.DataFrame = self.load_data(path)
+        df_cleaned = df.dropna(subset=['Current_Price'])
+        Y = df_cleaned['Current_Price'].copy()
+        X = df_cleaned.drop('Current_Price', axis=1).drop('Date', axis=1).drop('Symbol', axis=1)
         return X, Y
 

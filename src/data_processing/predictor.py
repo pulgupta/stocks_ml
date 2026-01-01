@@ -5,7 +5,7 @@ import pandas as pd
 
 class Predictor:
 
-    def predict_from_csv(csv_path, model_name='random_forest', models_dir='./models', output_path=None):
+    def predict_from_csv(csv_path, model_name, models_dir):
         """
         Load a CSV file and predict stock prices using trained model.
         """

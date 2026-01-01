@@ -29,10 +29,10 @@ def main():
         data_processor = DataProcessor()
         X, Y = data_processor.prepare_data(str(ROOT_DIR) + '/data/raw')
         model_trainer = ModelTrainer()
-        model_trainer.train(X, Y)
+        model_trainer.train(X, Y, str(ROOT_DIR) + '/models/saved_models')
     else:
         predictor = Predictor()
-        predictor.predict_from_csv(args.input)
+        predictor.predict_from_csv(args.input, 'random_forest', str(ROOT_DIR) + '/models/saved_models')
 
 if __name__ == "__main__":
     main()

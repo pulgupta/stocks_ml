@@ -7,7 +7,7 @@ import json
 
 class ModelTrainer:
 
-    def train(self, X, Y):
+    def train(self, X, Y, path):
         X_train, X_test, y_train, y_test = train_test_split(
             X, Y, test_size=0.2, random_state=42
         )
@@ -24,9 +24,9 @@ class ModelTrainer:
             n_jobs=-1
         )
         model.fit(X_train_scaled, y_train)
-        self.save_model(model, scaler, X.keys())
+        self.save_model(model, scaler, X.columns, 'random_forest', path)
 
-    def save_model(self, model, scaler, feature_columns, model_name='random_forest', output_dir='./models'):
+    def save_model(self, model, scaler, feature_columns, model_name, output_dir):
         """
         Save trained model, scaler, and metadata.
         """
@@ -45,7 +45,7 @@ class ModelTrainer:
 
         # Save metadata (feature columns)
         metadata = {
-            'feature_columns': feature_columns,
+            'feature_columns': feature_columns.tolist(),
             'model_type': type(model).__name__
         }
         metadata_path = Path(output_dir) / f'{model_name}_metadata.json'
@@ -55,7 +55,7 @@ class ModelTrainer:
 
         return model_path, scaler_path, metadata_path
 
-    def load_model(model_name='random_forest', models_dir='./models'):
+    def load_model(model_name, models_dir):
         """
         Load trained model, scaler, and metadata.
         """
