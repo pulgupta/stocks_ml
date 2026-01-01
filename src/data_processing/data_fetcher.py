@@ -13,7 +13,7 @@ url_map = {
     'niftysmallcap250': 'https://nsearchives.nseindia.com/content/indices/ind_niftysmallcap250list.csv'
 }
 
-class DataManager:
+class DataFetcher:
     
     def get_stock_ticker(self, index_name) -> pd.DataFrame:
         headers = {
@@ -83,7 +83,7 @@ class DataManager:
                 'Operating_Cashflow': info.get('operatingCashflow'),
                 'Free_Cashflow': info.get('freeCashflow'),
                 'Beta': info.get('beta'),
-                'Shares_Outstanding': info.get('sharesOutstanding'),
+                'Current_Price': info.get('currentPrice'),
             }
             
             # 3. Financial Statements
@@ -109,29 +109,33 @@ class DataManager:
             
     def save_csv(self, data, symbol):
         if data:
+            """
+                currently we are only saving fundamental data
+                once the model is working then we will start using other params as well
+            """
             print (f'Saving details for {symbol}')
             target_file = '/Users/pulgupta/Documents/codes/Stocks-ML/data/raw/' + symbol
             # Save price data
-            data['price_data'].to_csv(target_file + '_prices.csv')
+            # data['price_data'].to_csv(target_file + '_prices.csv')
             
             # Save current fundamentals
             pd.DataFrame([data['current_fundamentals']]).to_csv(target_file + '_fundamentals.csv', index=False)
             
             # Save financial statements
-            data['income_statement'].to_csv(target_file + '_income_stmt.csv')
-            data['balance_sheet'].to_csv(target_file + '_balance_sheet.csv')
-            data['cashflow'].to_csv(target_file + '_cashflow.csv')
-            data['quarterly_financials'].to_csv(target_file + '_quarterly.csv')
+            # data['income_statement'].to_csv(target_file + '_income_stmt.csv')
+            # data['balance_sheet'].to_csv(target_file + '_balance_sheet.csv')
+            # data['cashflow'].to_csv(target_file + '_cashflow.csv')
+            # data['quarterly_financials'].to_csv(target_file + '_quarterly.csv')
 
 def main():
-    data_manager = DataManager()
+    data_fetcher = DataFetcher()
     print('Downloading stock list')
-    df = data_manager.get_stock_ticker('nifty50')
-    all_symbols = data_manager.extract_symbol(df)
+    df = data_fetcher.get_stock_ticker('nifty50')
+    all_symbols = data_fetcher.extract_symbol(df)
     for s in all_symbols:
         print(f'Downloading stock data for {s}')
-        data = data_manager.get_comprehensive_stock_data(s)
-        data_manager.save_csv(data, s)
+        data = data_fetcher.get_comprehensive_stock_data(s)
+        data_fetcher.save_csv(data, s)
         time.sleep(5)
 
 if __name__ == "__main__":
