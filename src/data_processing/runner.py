@@ -2,8 +2,12 @@ from data_processor import DataProcessor
 from model_trainer import ModelTrainer
 from predictor import Predictor
 import argparse
+from pathlib import Path
+import os
 
 def main():
+
+    ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 
     parser = argparse.ArgumentParser(
         description='Train or predict stock prices using ML',
@@ -23,7 +27,7 @@ def main():
 
     if args.command == 'train':
         data_processor = DataProcessor()
-        X, Y = data_processor.prepare_data()
+        X, Y = data_processor.prepare_data(str(ROOT_DIR) + '/data/raw')
         model_trainer = ModelTrainer()
         model_trainer.train(X, Y)
     else:
