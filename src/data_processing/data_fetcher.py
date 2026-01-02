@@ -130,13 +130,13 @@ class DataFetcher:
 def main():
     data_fetcher = DataFetcher()
     print('Downloading stock list')
-    df = data_fetcher.get_stock_ticker('nifty50')
+    df = data_fetcher.get_stock_ticker('nifty500')
     all_symbols = data_fetcher.extract_symbol(df)
     for s in all_symbols:
         print(f'Downloading stock data for {s}')
         data = data_fetcher.get_comprehensive_stock_data(s)
         data_fetcher.save_csv(data, s)
-        time.sleep(5)
+        time.sleep(1)
 
 if __name__ == "__main__":
     main()
