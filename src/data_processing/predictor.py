@@ -1,5 +1,4 @@
 from model_trainer import ModelTrainer
-from data_processor import DataProcessor
 from data_fetcher import DataFetcher
 import pandas as pd
 
@@ -19,7 +18,7 @@ class Predictor:
         feature_columns = metadata['feature_columns']
 
         # Load CSV
-        X = pd.DataFrame([data['current_fundamentals']]).drop(columns=['Date', 'Symbol', 'Current_Price'])
+        X = pd.DataFrame([data['current_fundamentals']])[feature_columns]
         print(f"Loaded {len(X)} rows from CSV")
 
         # Scale features
