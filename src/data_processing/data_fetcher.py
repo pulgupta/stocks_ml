@@ -123,18 +123,14 @@ class DataFetcher:
             # data['cashflow'].to_csv(target_file + '_cashflow.csv')
             # data['quarterly_financials'].to_csv(target_file + '_quarterly.csv')
 
-def main():
-    ROOT_DIR = Path(__file__).resolve().parent.parent.parent
-    data_fetcher = DataFetcher()
-    print('Downloading stock list')
-    df = data_fetcher.get_stock_ticker('nifty500')
-    all_symbols = data_fetcher.extract_symbol(df)
-    for s in all_symbols:
-        print(f'Downloading stock data for {s}')
-        data = data_fetcher.get_comprehensive_stock_data(s)
-        data_fetcher.save_csv(data, s, str(ROOT_DIR))
-        time.sleep(1)
-
-if __name__ == "__main__":
-    main()
+    def fetch_all_data(self, path):
+        data_fetcher = DataFetcher()
+        print('Downloading stock list')
+        df = data_fetcher.get_stock_ticker('nifty500')
+        all_symbols = data_fetcher.extract_symbol(df)
+        for s in all_symbols:
+            print(f'Downloading stock data for {s}')
+            data = data_fetcher.get_comprehensive_stock_data(s)
+            data_fetcher.save_csv(data, s, path)
+            time.sleep(1)
             
