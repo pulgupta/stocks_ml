@@ -21,7 +21,7 @@ def main():
 
     # Predict command
     predict_parser = subparsers.add_parser('predict', help='Predict prices from CSV')
-    predict_parser.add_argument('--input', required=True, help='CSV file to predict')
+    predict_parser.add_argument('--ticker', required=True, help='CSV file to predict')
 
     args = parser.parse_args()
 
@@ -32,7 +32,7 @@ def main():
         model_trainer.train(X, Y, str(ROOT_DIR) + '/models/saved_models')
     else:
         predictor = Predictor()
-        predictor.predict_from_csv(args.input, 'random_forest', str(ROOT_DIR) + '/models/saved_models')
+        predictor.predict(args.ticker, 'random_forest', str(ROOT_DIR) + '/models/saved_models')
 
 if __name__ == "__main__":
     main()

@@ -1,16 +1,16 @@
 from model_trainer import ModelTrainer
 from data_processor import DataProcessor
+from data_fetcher import DataFetcher
 import pandas as pd
 
 
 class Predictor:
 
-    def predict_from_csv(self, csv_path, model_name, models_dir):
-        """
-        Load a CSV file and predict stock prices using trained model.
-        """
+    def predict(self, ticker, model_name, models_dir):
+        data_fetcher = DataFetcher()
+        data = data_fetcher.get_comprehensive_stock_data(data_fetcher.modify_ticker(ticker))
         print(f"\n{'='*50}")
-        print(f"PREDICTING PRICES FROM: {csv_path}")
+        print(f"PREDICTING PRICES FROM: {ticker}")
         print(f"{'='*50}\n")
 
         # Load model
@@ -19,7 +19,7 @@ class Predictor:
         feature_columns = metadata['feature_columns']
 
         # Load CSV
-        X = pd.read_csv(csv_path)
+        X = pd.DataFrame([data['current_fundamentals']]).drop(columns=['Date', 'Symbol', 'Current_Price'])
         print(f"Loaded {len(X)} rows from CSV")
 
         # Scale features

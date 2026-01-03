@@ -30,7 +30,10 @@ class DataFetcher:
         
         
     def extract_symbol(self, df):
-        return [symbol + '.NS' for symbol in df['Symbol'].tolist()]
+        return [self.modify_ticker(symbol) for symbol in df['Symbol'].tolist()]
+
+    def modify_ticker (self, symbol):
+        return symbol + '.NS'
     
     def save_stock_details(self, symbols):
         total_symbols = len(symbols)
