@@ -2,7 +2,9 @@ from pathlib import Path
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import joblib
+import numpy as np
 import json
 
 class ModelTrainer:
@@ -24,6 +26,22 @@ class ModelTrainer:
             n_jobs=-1
         )
         model.fit(X_train_scaled, y_train)
+
+        y_pred = model.predict(X_test_scaled)
+
+        mae = mean_absolute_error(y_test, y_pred)
+        mse = mean_squared_error(y_test, y_pred)
+        rmse = np.sqrt(mse)  # Calculate RMSE manually
+        r2 = r2_score(y_test, y_pred)
+
+        print(f"\n{'='*50}")
+        print("MODEL PERFORMANCE")
+        print(f"{'='*50}")
+        print(f"MAE: ₹{mae:.2f}")
+        print(f"RMSE: ₹{rmse:.2f}")
+        print(f"R² Score: {r2:.4f}")
+        print(f"Mean Absolute Error %: {(mae / y_test.mean()) * 100:.2f}%")
+
         self.save_model(model, scaler, X.columns, 'random_forest', path)
 
     def save_model(self, model, scaler, feature_columns, model_name, output_dir):

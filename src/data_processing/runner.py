@@ -3,7 +3,6 @@ from model_trainer import ModelTrainer
 from predictor import Predictor
 import argparse
 from pathlib import Path
-import os
 
 def main():
 

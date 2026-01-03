@@ -3,6 +3,7 @@ import requests
 import pandas as pd
 from io import StringIO
 import yfinance as yf
+from pathlib import Path
 
 url_map = {
     'nifty50': 'https://nsearchives.nseindia.com/content/indices/ind_nifty50list.csv',
@@ -34,15 +35,7 @@ class DataFetcher:
 
     def modify_ticker (self, symbol):
         return symbol + '.NS'
-    
-    def save_stock_details(self, symbols):
-        total_symbols = len(symbols)
-        print(f'total symbols are {total_symbols}')
-        for symbol in symbols: 
-            print (f'Downloading data for {symbol}')
-            dat = yf.download(symbol, period='1mo')
-            dat.to_csv('/Users/pulgupta/Documents/codes/Stocks-ML/data/raw/' + symbol + '.csv'),
-            time.sleep(10)
+
             
     def get_comprehensive_stock_data(self, symbol):
         """Get price data + all fundamental data for a stock"""
@@ -110,14 +103,14 @@ class DataFetcher:
             print(f"Error fetching data for {symbol}: {e}")
             return None
             
-    def save_csv(self, data, symbol):
+    def save_csv(self, data, symbol, path):
         if data:
             """
                 currently we are only saving fundamental data
                 once the model is working then we will start using other params as well
             """
             print (f'Saving details for {symbol}')
-            target_file = '/Users/pulgupta/Documents/codes/Stocks-ML/data/raw/' + symbol
+            target_file = path + '/data/raw/' + symbol
             # Save price data
             # data['price_data'].to_csv(target_file + '_prices.csv')
             
@@ -131,6 +124,7 @@ class DataFetcher:
             # data['quarterly_financials'].to_csv(target_file + '_quarterly.csv')
 
 def main():
+    ROOT_DIR = Path(__file__).resolve().parent.parent.parent
     data_fetcher = DataFetcher()
     print('Downloading stock list')
     df = data_fetcher.get_stock_ticker('nifty500')
@@ -138,7 +132,7 @@ def main():
     for s in all_symbols:
         print(f'Downloading stock data for {s}')
         data = data_fetcher.get_comprehensive_stock_data(s)
-        data_fetcher.save_csv(data, s)
+        data_fetcher.save_csv(data, s, str(ROOT_DIR))
         time.sleep(1)
 
 if __name__ == "__main__":
